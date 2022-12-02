@@ -31,3 +31,5 @@ FPS = 60
 images_path = Path(__file__).parent / "img"
 
 gamespeed = 3
+
+heli_pic = "less_til_heli.png"
