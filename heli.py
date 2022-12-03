@@ -17,6 +17,13 @@ class Copter(pygame.sprite.Sprite):
 
         self.has_control = True
 
+        self.boom = pygame.mixer.Sound( snd_path / "Chunky Explosion.mp3" )
+
+    # уничтожение вертолета со звуком
+    def kill(self):
+        super().kill()
+        self.boom.play()
+
     def update(self):
         if self.has_control:
             keystate = pygame.key.get_pressed()
@@ -38,6 +45,7 @@ class Copter(pygame.sprite.Sprite):
 
         else:
             self.rect.y += 10 # потеряли управление - падаем
+            self.rect.x += self.speedx
             if not ((self.rect.y+1) % 50):
                 self.image = pygame.transform.flip(self.image, True, False)
 
@@ -50,6 +58,7 @@ class enemyCopter(Copter):
         self.speedy = gamespeed * random.randint(-1, 1)
         self.image = pygame.transform.flip(self.image, True, False)
         self.image.set_colorkey(BLACK)
+
     def update(self):
         if self.has_control:
 
@@ -69,5 +78,6 @@ class enemyCopter(Copter):
 
         else:
             self.rect.y += 10 # потеряли управление - падаем
+            self.rect.x += self.speedx
             if not ((self.rect.y+1) % 50):
                 self.image = pygame.transform.flip(self.image, True, False)

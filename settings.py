@@ -29,6 +29,7 @@ HEIGHT = bck_dict[bckgnd][1]
 FPS = 60
 
 images_path = Path(__file__).parent / "img"
+snd_path = Path(__file__).parent / "snd"
 
 gamespeed = 3
 

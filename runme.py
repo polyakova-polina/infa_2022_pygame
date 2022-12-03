@@ -9,6 +9,8 @@ from pathlib import Path
 # Создаем игру и окно
 pygame.init()
 pygame.mixer.init()
+pygame.mixer.pre_init(44100, 16, 2, 4096)
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("helicopter fly")
 clock = pygame.time.Clock()
@@ -73,13 +75,14 @@ while running:
     # Проверка, врезания в землю
     if pygame.sprite.spritecollide(copter, bounds, False):
         if copter.rect.top != -1: # упали на землю, взорвались и исчезли
+
+            # выставляем месторасположение взрыва и добавляем его в список спрайтов для последующей отрисовки
             explosion.rect.bottom = copter.rect.bottom
             explosion.rect.left = copter.rect.left
             all_sprites.add(explosion)
 
+            # убиваем наш веротлётик и отправляем его в стартовую позицию чтоб не мешался
             copter.kill()
-            copter.rect.centerx = 10
-            copter.rect.bottom = HEIGHT / 2
 
     # После отрисовки всего, показываем экран
     pygame.display.flip()
