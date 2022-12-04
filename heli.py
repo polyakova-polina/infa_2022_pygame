@@ -12,17 +12,26 @@ class Copter(pygame.sprite.Sprite):
         
         self.rect.centerx = 10
         self.rect.bottom = HEIGHT / 2
-        self.speedx = 0
+        self.speedx = gamespeed
         self.speedy = 0
 
         self.has_control = True
 
         self.boom = pygame.mixer.Sound( snd_path / "Chunky Explosion.mp3" )
 
+        self.ammo = 100
+        self.health = 100
+        self.killed_enemies = 0
+
+        self.name = "my_copter"
+
     # уничтожение вертолета со звуком
     def kill(self):
         super().kill()
         self.boom.play()
+        self.rect.x = -100
+        self.rect.y = -100
+        self.health = 0
 
     def update(self):
         if self.has_control:
@@ -49,8 +58,8 @@ class Copter(pygame.sprite.Sprite):
             if not ((self.rect.y+1) % 50):
                 self.image = pygame.transform.flip(self.image, True, False)
 
-class enemyCopter(Copter):
-    def __init__(self, pic):
+class enemyCopter(pygame.sprite.Sprite):
+    def __init__(self, pic, copter):
         Copter.__init__(self, pic)
         self.rect.centerx = WIDTH-10
         self.rect.bottom = random.randint(50, HEIGHT-50)
@@ -59,11 +68,17 @@ class enemyCopter(Copter):
         self.image = pygame.transform.flip(self.image, True, False)
         self.image.set_colorkey(BLACK)
 
+        self.name = "enemy_copter"
+
+        self.copter = copter
+
     def update(self):
         if self.has_control:
 
             self.speedx = -gamespeed
-            self.speedy = gamespeed * random.randint(-2, 2)
+            direct = self.copter.rect.y - self.rect.y
+            direct = -1 if direct < 0 else 1
+            self.speedy = gamespeed * direct
 
             self.rect.x += self.speedx
             self.rect.y += self.speedy
@@ -81,3 +96,22 @@ class enemyCopter(Copter):
             self.rect.x += self.speedx
             if not ((self.rect.y+1) % 50):
                 self.image = pygame.transform.flip(self.image, True, False)
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y, direction=1):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.Surface( (10, 5) )
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.midright = (x, y)
+        self.dir = direction
+
+        self.speedx = gamespeed*2*self.dir
+
+        self.name = "bullet"
+
+    def update(self):
+        self.rect.x += gamespeed*2*self.dir
+        if self.rect.x > WIDTH or self.rect.x < 0:
+            self.kill()
