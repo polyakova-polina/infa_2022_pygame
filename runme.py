@@ -1,6 +1,6 @@
 import pygame
 import random
-from heli import Copter, enemyCopter, Bullet
+from heli import Copter, enemyCopter, Bullet, gameOver
 from explosions import *
 from settings import *
 from pathlib import Path
@@ -16,6 +16,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("helicopter fly")
 clock = pygame.time.Clock()
 my_font = pygame.font.SysFont(None, 20)
+
+shoot_snd = pygame.mixer.Sound( snd_path / "DeathFlash.flac" )
 
 background = pygame.image.load( Path(__file__).parent / "img" / "bckgnd" / bckgnd )#.convert()
 background_rect = background.get_rect()
@@ -43,6 +45,10 @@ while running:
         enemyCopters.add(enemy)
         all_sprites.add(enemy)
 
+    # раз в 5000 циклов подкинем патронов
+    if not (running % 5000):
+        copter.ammo += 100
+
     # считываем нажатия на клавиши
     keystate = pygame.key.get_pressed()
     # Пробелом стреляем раз в 10 тиков и если остались патроны
@@ -52,6 +58,7 @@ while running:
             all_sprites.add(bullet)
             bullets.add(bullet)
             copter.ammo -= 1
+            shoot_snd.play()
 
     # Ввод процесса (события)
     for event in pygame.event.get():
@@ -82,6 +89,7 @@ while running:
         explosion.rect.center = copter.rect.center
         all_sprites.add(explosion)
         copter.kill()
+        all_sprites.add(gameOver())
 
     # попадания пулек во врага
     enemy_hits = pygame.sprite.groupcollide(bullets, enemyCopters, True, True)
@@ -101,6 +109,8 @@ while running:
 
             # убиваем наш веротлётик
             copter.kill()
+
+            all_sprites.add(gameOver())
 
     # Рендеринг
     screen.blit(background, background_rect)

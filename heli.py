@@ -72,6 +72,12 @@ class enemyCopter(pygame.sprite.Sprite):
 
         self.copter = copter
 
+        self.boom = pygame.mixer.Sound( snd_path / "DeathFlash.flac" )
+
+    def kill(self):
+        super().kill()
+        self.boom.play()
+
     def update(self):
         if self.has_control:
 
@@ -115,3 +121,18 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x += gamespeed*2*self.dir
         if self.rect.x > WIDTH or self.rect.x < 0:
             self.kill()
+
+class gameOver(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load( images_path / "game over.png" ).convert()
+        self.image.set_colorkey(BLACK)
+        self.rect = self.image.get_rect()
+        
+        self.rect.centerx = WIDTH / 2
+        self.rect.centery = HEIGHT / 2
+        self.speedx = 0
+        self.speedy = 0
+
+    def update(self):
+        pass
