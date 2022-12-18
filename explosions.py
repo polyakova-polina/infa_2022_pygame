@@ -6,10 +6,11 @@ from settings import *
 class Explosion(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        img = pygame.image.load( images_path / "explosion" / "explosion2.png" ).convert()
-        self.image = pygame.transform.scale(img, (100, 100)) 
+        img = pygame.image.load(images_path / "explosion" / "explosion2.png").convert()
+        self.image = pygame.transform.scale(img, (100, 100))
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
+
 
 # создание границы
 class Bound(pygame.sprite.Sprite):

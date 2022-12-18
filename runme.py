@@ -5,7 +5,6 @@ from explosions import *
 from settings import *
 from pathlib import Path
 
-
 # Создаем игру и окно
 pygame.init()
 pygame.mixer.init()
@@ -17,15 +16,15 @@ pygame.display.set_caption("helicopter fly")
 clock = pygame.time.Clock()
 my_font = pygame.font.SysFont(None, 20)
 
-shoot_snd = pygame.mixer.Sound( snd_path / "DeathFlash.flac" )
+shoot_snd = pygame.mixer.Sound(snd_path / "DeathFlash.flac")
 
-background = pygame.image.load( Path(__file__).parent / "img" / "bckgnd" / bckgnd )#.convert()
+background = pygame.image.load(Path(__file__).parent / "img" / "bckgnd" / bckgnd)  # .convert()
 background_rect = background.get_rect()
 
 explosion = Explosion()
-copter = Copter(heli_pic) # наш вертолет
+copter = Copter(heli_pic)  # наш вертолет
 bounds = pygame.sprite.Group()
-bounds.add( [Bound(HEIGHT-1), Bound(0)] )# граница по земле и по небу
+bounds.add([Bound(HEIGHT - 1), Bound(0)])  # граница по земле и по небу
 all_sprites, enemyCopters, bullets = pygame.sprite.Group(), pygame.sprite.Group(), pygame.sprite.Group()
 all_sprites.add(copter)
 
@@ -34,7 +33,9 @@ running = 1
 while running:
     running += 1
 
-    text_surface = my_font.render(f'Здоровье : {copter.health} Патроны : {copter.ammo} Сбито {copter.killed_enemies} вертолетов', False, (0, 0, 0))
+    text_surface = my_font.render(
+        f'Здоровье : {copter.health} Патроны : {copter.ammo} Сбито {copter.killed_enemies} вертолетов', False,
+        (0, 0, 0))
 
     # Держим цикл на правильной скорости
     clock.tick(FPS)
@@ -72,9 +73,9 @@ while running:
 
         # ЛКМ - перезапуск игры
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  #  левая кнопка мыши
+            if event.button == 1:  # левая кнопка мыши
                 running = 1
-                copter = Copter(heli_pic) # наш вертолет
+                copter = Copter(heli_pic)  # наш вертолет
                 all_sprites.empty()
                 enemyCopters.empty()
                 bullets.empty()
@@ -94,14 +95,14 @@ while running:
     # попадания пулек во врага
     enemy_hits = pygame.sprite.groupcollide(bullets, enemyCopters, True, True)
     if enemy_hits:
-        blt = list( enemy_hits.keys() )[0]
+        blt = list(enemy_hits.keys())[0]
         explosion.rect.center = blt.rect.center
         all_sprites.add(explosion)
         copter.killed_enemies += 1
 
     # Проверка, врезания в землю
     if pygame.sprite.spritecollide(copter, bounds, False):
-        if copter.rect.top != -1: # упали на землю, взорвались и исчезли
+        if copter.rect.top != -1:  # упали на землю, взорвались и исчезли
 
             # выставляем месторасположение взрыва и добавляем его в список спрайтов для последующей отрисовки
             explosion.rect.center = copter.rect.center
